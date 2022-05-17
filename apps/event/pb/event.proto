@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package infraboard.eventbox.event;
+option go_package="github.com/infraboard/eventbox/apps/event";
+
+enum Severity {
+    // ALL 用于指代所有级别的告警
+    ALL = 0;
+    // UNKNOWN 告警基本未知
+    UNKNOWN = 1;
+    // TRACE 不告警, 会记录事件
+    TRACE = 2;
+    // INFO 只进行群通知
+    INFO = 3;
+    // WARN 群通知, 个人通知
+    WARN = 4;
+    // CRITICAL 电话告警, 群通知, 个人通知
+    CRITICAL = 5;
+    // EMERGENCY 电话告警, 群通知, 个人通知
+    EMERGENCY = 6;
+    // DISASTER 内部系统告警 预留等级
+    // 电话告警采用独立渠道发送, 支持阿里云/腾讯云 双通道主备
+    // 仅管理员可以配置该等级的告警
+    DISASTER = 15;
+}
