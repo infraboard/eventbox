@@ -34,7 +34,7 @@ func TestSend(t *testing.T) {
 	}
 
 	message := feishu.NewFiledMarkdownMessage(
-		"https://open.feishu.cn/open-apis/bot/v2/hook/e7e25b64-abf4-47a6-bade-66debd469bad",
+		"feishu robot addr",
 		"1 级报警 - 数据平台",
 		feishu.COLOR_RED,
 		g1,
