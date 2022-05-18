@@ -15,20 +15,20 @@ var (
 func TestSend(t *testing.T) {
 	g1 := &feishu.FiledGroup{
 		Items: []*feishu.NotifyFiled{
-			{Key: "📅 时间: ", Value: "2021-02-23 20:17:51"},
-			{Key: "👤 用户: ", Value: "曾友"},
-			{Key: "🔹 主机: ", Value: "jumpserver"},
-			{Key: "📋 操作: ", Value: "hadoop fs -setfacl dwa_vrisk"},
+			{Key: "📅 时间: ", Value: "2022-02-23 20:17:51"},
+			{Key: "👤 用户: ", Value: "测试"},
+			{Key: "🔹 主机: ", Value: "host01"},
+			{Key: "📋 操作: ", Value: "command xxx"},
 		},
 		EndType: feishu.FiledGroupEndType_Hr,
 	}
 
 	g2 := &feishu.FiledGroup{
 		Items: []*feishu.NotifyFiled{
-			{Key: "📅 时间: ", Value: "2021-02-23 20:17:51"},
-			{Key: "👤 用户: ", Value: "曾友"},
-			{Key: "🔹 主机: ", Value: "jumpserver"},
-			{Key: "📋 操作: ", Value: "hadoop fs -setfacl dwa_vrisk"},
+			{Key: "📅 时间: ", Value: "2022-02-23 20:17:51"},
+			{Key: "👤 用户: ", Value: "测试"},
+			{Key: "🔹 主机: ", Value: "host01"},
+			{Key: "📋 操作: ", Value: "command xxx"},
 		},
 		EndType: feishu.FiledGroupEndType_Line,
 	}
