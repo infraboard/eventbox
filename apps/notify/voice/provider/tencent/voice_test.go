@@ -17,9 +17,9 @@ var (
 
 var (
 	// 查询你的Appid https://console.cloud.tencent.com/vms,
-	voiceSdkAppId = "1400121047"
+	voiceSdkAppId = "xxx"
 	// 查询你的模版Id https://console.cloud.tencent.com/vms/template
-	voiceTemplateId = "168501"
+	voiceTemplateId = "xxxx"
 )
 
 func TestQcloudVoice(t *testing.T) {

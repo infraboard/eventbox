@@ -13,7 +13,7 @@ var sender *gomail.Sender
 
 func TestSend(t *testing.T) {
 	m := &mail.Request{
-		To:      []string{"yumaojun@g7.com.cn"},
+		To:      []string{"719118794@qq.com"},
 		Title:   "告警告警",
 		Content: "告警来了",
 	}
