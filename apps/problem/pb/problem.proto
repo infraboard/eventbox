@@ -1,0 +1,4 @@
+syntax = "proto3";
+
+package infraboard.eventbox.problem;
+option go_package="github.com/infraboard/eventbox/api/apps/problem";

@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package infraboard.eventbox.voice;
-option go_package="github.com/infraboard/eventbox/api/apps/notify/voice";
+option go_package="github.com/infraboard/eventbox/apps/notify/voice";
 
 service Service {
     rpc Notify(Request) returns(RecordSet) {};

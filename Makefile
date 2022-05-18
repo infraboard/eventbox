@@ -65,11 +65,13 @@ pb: ## Copy mcube protobuf files to common/pb
 	@sudo rm -rf common/pb/github.com/infraboard/mcube/pb/*/*.go
 
 gen: ## Init Service
-	@protoc -I=. -I=common/pb --go_out=. --go_opt=module=${PKG} --go-grpc_out=. --go-grpc_opt=module=${PKG} apps/*/pb/*.proto
+	@protoc -I=. -I=common/pb --go_out=. --go_opt=module=${PKG} --go-grpc_out=. --go-grpc_opt=module=${PKG} apps/*/pb/*.proto apps/*/*/pb/*.proto
 	@go fmt ./...
 
 	@protoc-go-inject-tag -input=apps/*/*.pb.go
 	@mcube generate enum -p -m apps/*/*.pb.go
+	@protoc-go-inject-tag -input=apps/*/*/*.pb.go
+	@mcube generate enum -p -m apps/*/*/*.pb.go
 
 
 help: ## Display this help screen

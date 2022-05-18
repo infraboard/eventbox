@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package infraboard.eventbox.group;
+option go_package="github.com/infraboard/eventbox/apps/notify/group";
+
+import "github.com/infraboard/mcube/pb/page/page.proto";
+import "apps/event/pb/event.proto";
+
+// IM群组通知
+service Notify {
+    rpc Notify(Request) returns(Record) {};
+    rpc QueryRecord(QueryRecordRequest) returns(RecordSet) {};
+}
+
+message Record {
+    // 标准Id
+    // @gotags: json:"id" bson:"_id"
+    string id = 1;
+    // 触发时间
+    // @gotags: json:"trigger_at" bson:"trigger_at"
+    int64 trigger_at = 2;
+    // IM群组的名称
+    // @gotags: json:"group_describe" bson:"group_describe"
+    string group_describe = 5;
+    // 请求
+    // @gotags: json:"request" bson:"request"
+    Request request = 3;
+    // 响应
+    // @gotags: json:"response" bson:"response"
+    Response response = 4;
+}
+
+message RecordSet {
+    // @gotags: json:"total"
+    int64 total = 1;
+    // @gotags: json:"items"
+    repeated Record items = 2;   
+}
+
+enum Provider {
+    FEISHU = 0;
+}
+
+message Request {
+    // 厂商
+    // @gotags: json:"provider" bson:"provider"
+    Provider provider = 1;
+    // 机器人地址
+    // @gotags: json:"robot_url" bson:"robot_url" validate:"required"
+    string robot_url = 2;
+    // 告警时标题
+    // @gotags: json:"title" bson:"title" validate:"required"
+    string title = 3;
+    // 告警内容
+    // @gotags: json:"content" bson:"content"
+    string content = 4;
+    // 触发时间
+    // @gotags: json:"trigger_at" bson:"trigger_at"
+    int64 trigger_at = 5;
+    // 事件状态
+    // @gotags: json:"state" bson:"state"
+    infraboard.eventbox.event.State state = 6;
+    // 告警等级
+    // @gotags: json:"severity" bson:"severity"
+    infraboard.eventbox.event.Severity severity = 7;
+    // 告警标签
+    // @gotags: json:"labels" bson:"labels"
+    repeated infraboard.eventbox.event.Label labels = 8;
+    // 测试运行
+    // @gotags: json:"dry_run" bson:"dry_run"
+    bool dry_run = 9;
+}
+
+message Response {
+    // 是否成功
+    // @gotags: json:"success" bson:"success"
+    bool success = 1;
+    // 错误消息，result 非0时的具体错误信息
+    // @gotags: json:"err_msg" bson:"err_msg"
+    string err_msg = 2;
+}
+
+message QueryRecordRequest {
+    // 分页参数
+    // @gotags: json:"page"
+    infraboard.mcube.page.PageRequest page = 1;
+}

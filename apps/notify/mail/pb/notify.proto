@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package infraboard.eventbox.mail;
-option go_package="github.com/infraboard/eventbox/api/apps/notify/mail";
+option go_package="github.com/infraboard/eventbox/apps/notify/mail";
 
 service Service {
     rpc Notify(Request) returns(Record) {};
