@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package infraboard.eventbox.mail;
+option go_package="github.com/infraboard/eventbox/api/apps/notify/mail";
+
+service Service {
+    rpc Notify(Request) returns(Record) {};
+}
+
+message Request {
+    // 邮件地址列表
+    // @gotags: json:"to" bson:"to" validate:"required"
+    repeated string to = 2;
+    // 告警时标题
+    // @gotags: json:"title" bson:"title" validate:"required"
+    string title = 3;
+    // 告警内容
+    // @gotags: json:"content" bson:"content"
+    string content = 4;
+}
+
+message Response {
+    // 告警内容
+    // @gotags: json:"is_success" bson:"is_success"
+    bool is_success = 1;
+    // 告警内容
+    // @gotags: json:"message" bson:"message"
+    string message = 2;
+}
+
+message Record {
+    // 记录Id
+    // @gotags: json:"id" bson:"_id"
+    string id = 1;
+    // 记录创建时间
+    // @gotags: json:"create_at" bson:"create_at"
+    int64 create_at = 2;
+    // 告警内容
+    // @gotags: json:"request" bson:"request"
+    Request request = 3;
+    // 告警内容
+    // @gotags: json:"response" bson:"response"
+    Response response = 4;
+}
+
+message RecordSet {
+    // @gotags: json:"total"
+    int64 total = 1;
+    // @gotags: json:"items"
+    repeated Record items = 2;   
+}

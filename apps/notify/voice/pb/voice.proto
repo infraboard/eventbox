@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package infraboard.eventbox.voice;
+option go_package="github.com/infraboard/eventbox/api/apps/notify/voice";
+
+service Service {
+    rpc Notify(Request) returns(RecordSet) {};
+    rpc NotifyCallback(Callback) returns(Response) {};
+}
+
+message RecordSet {
+    // @gotags: json:"total"
+    int64 total = 1;
+    // @gotags: json:"items"
+    repeated Record items = 2;  
+}
+
+message Record {
+    // 标准Id
+    // @gotags: json:"id" bson:"_id"
+    string id = 1;
+    // 触发时间
+    // @gotags: json:"trigger_at" bson:"trigger_at"
+    int64 trigger_at = 2;
+    // 厂商
+    // @gotags: json:"provider" bson:"provider"
+    Provider provider = 3;
+    // 被叫手机号码，采用 e.164 标准，格式为+[国家或地区码][用户号码], 例如：+8613711112222，其中前面有一个+号，86为国家码，13711112222为手机号
+    // @gotags: json:"called_number" bson:"called_number"
+    string called_number = 4;
+    // 号码所属人
+    // @gotags: json:"number_owner" bson:"number_owner"
+    string number_owner = 8;
+    // 要发送的消息
+    // @gotags: json:"message" bson:"message"
+    string message = 5;
+    // 响应
+    // @gotags: json:"response" bson:"response"
+    Response response = 6;
+    // 回调
+    // @gotags: json:"callback" bson:"callback"
+    Callback callback = 7;
+}
+
+message Response {
+    // 是否成功
+    // @gotags: json:"success" bson:"success"
+    bool success = 1;
+    // 错误消息，result 非0时的具体错误信息
+    // @gotags: json:"err_msg" bson:"err_msg"
+    string err_msg = 2;
+}
+
+enum Provider {
+    TENCENT = 0;
+}
+
+message Request {
+    // 厂商
+    // @gotags: json:"provider" bson:"provider"
+    Provider provider = 1;
+    // 被叫手机号码，采用 e.164 标准，格式为+[国家或地区码][用户号码], 例如：+8613711112222，其中前面有一个+号，86为国家码，13711112222为手机号
+    // @gotags: json:"called_numbers" bson:"called_numbers" validate:"required"
+    repeated string called_numbers = 2;
+    // 要发送的消息
+    // @gotags: json:"message" bson:"message" validate:"required"
+    string message = 3;
+}
+
+enum NotifyStatus {
+    // 呼叫异常
+    ABNORMAL = 0;
+    // 用户正常接听
+    ANSWERED = 1;
+    // 用户未接听
+    DENY = 2;
+}
+
+message Callback {
+    // @gotags: json:"result" bson:"result"
+    NotifyStatus result = 1;
+    // 用户接听时间
+    // @gotags: json:"accept_time" bson:"accept_time"
+    int64 accept_time = 2;
+    // 呼入号码
+    // @gotags: json:"call_from" bson:"call_from"
+    string call_from = 3;
+    // 标识本次发送 ID
+    // @gotags: json:"callid" bson:"callid" validate:"required"
+    string call_id = 4;
+    // 结束语音通知呼叫时间
+    // @gotags: json:"end_calltime" bson:"end_calltime"
+    int64 end_calltime = 5;
+    // 计费时长，单位为分钟
+    // @gotags: json:"fee" bson:"fee"
+    string fee = 6;
+    // 手机号码
+    // @gotags: json:"mobile" bson:"mobile"
+    string mobile = 7;
+    // 国家（或地区）码
+    // @gotags: json:"nationcode" bson:"nationcode"
+    string nationcode = 8;
+    // 开始发起语音通知呼叫时间
+    // @gotags: json:"start_calltime" bson:"start_calltime"
+    int64 start_calltime = 9;
+}

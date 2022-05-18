@@ -3,23 +3,134 @@ syntax = "proto3";
 package infraboard.eventbox.event;
 option go_package="github.com/infraboard/eventbox/apps/event";
 
+// 描述事件对服务可用性的影响
 enum Severity {
-    // ALL 用于指代所有级别的告警
-    ALL = 0;
-    // UNKNOWN 告警基本未知
-    UNKNOWN = 1;
-    // TRACE 不告警, 会记录事件
-    TRACE = 2;
-    // INFO 只进行群通知
-    INFO = 3;
-    // WARN 群通知, 个人通知
-    WARN = 4;
-    // CRITICAL 电话告警, 群通知, 个人通知
-    CRITICAL = 5;
-    // EMERGENCY 电话告警, 群通知, 个人通知
-    EMERGENCY = 6;
+    // TRACE 跟踪事件, 用于调试使用
+    TRACE = 0;
+    // INFO 普通, 对服务可用性无影响
+    INFO = 1;
+    // WARN 警告, 对服务可用性无影响, 但可能存在隐患
+    WARN = 2;
+    // CRITICAL 紧急, 小范围影响事件
+    CRITICAL = 3;
+    // EMERGENCY 紧急, 大范围影响事件
+    EMERGENCY = 4;
     // DISASTER 内部系统告警 预留等级
-    // 电话告警采用独立渠道发送, 支持阿里云/腾讯云 双通道主备
-    // 仅管理员可以配置该等级的告警
     DISASTER = 15;
+}
+
+// 事件来源
+enum ProviderType {
+    // 来自于平台内部服务产生的事件
+    INTERNAL = 0;
+    // 由Prometheus提供的事件, 由Prometheus webhook 发送过来
+    PROMETHEUS = 1;
+    // Grafana提供的事件, 通过granfa webhook 发送过来
+    GRAFANA = 2;
+    // 由k8s提供的事件
+    KUBERNETES = 3;
+    // 由应用直接发送的事件, 通过应用 webhook 发送过来
+    APPLICATION = 4;
+    // 手动触发
+    MANUAL = 15;
+}
+
+// 事件状态
+enum State {
+    // 告警中
+    FIRING = 0;
+    // 已恢复
+    RESOLVED = 1;
+}
+
+message Event {
+    // 事件Id
+    // @gotags: json:"id" bson:"_id"
+    string id = 1;
+    // 保存时间
+    // @gotags: json:"save_at" bson:"save_at"
+    int64 save_at = 2;
+    // 故障Id
+    // @gotags: json:"problem_id" bson:"problem_id"
+    string problem_id = 5;
+    // 是否忽略订阅
+    // @gotags: json:"is_skip_subscribe" bson:"is_skip_subscribe"
+    bool is_skip_subscribe = 7;
+    // 忽略订阅的原因
+    // @gotags: json:"skip_reason" bson:"skip_reason"
+    string skip_reason = 8;
+    // 保存时间
+    // @gotags: json:"data" bson:"data"
+    EventSpec data = 3;
+    // // 事件来源
+    // // @gotags: json:"source" bson:"source"
+    // Source source = 4;
+    // // 事件订阅记录
+    // // @gotags: json:"subscribe_records" bson:"subscribe_records"
+    // repeated SubscribeRecord subscribe_records = 6;
+}
+
+// 事件具体信息
+message EventSpec {
+    // 事件提供方
+    // @gotags: json:"provider" bson:"provider"
+    Provider provider = 1;
+    // 事件等级
+    // @gotags: json:"severity" bson:"severity"
+    Severity severity = 2;
+    // 开始时间
+    // @gotags: json:"start_at" bson:"start_at"
+    int64 start_at = 3;
+    // 触发时间
+    // @gotags: json:"trigger_at" bson:"trigger_at"
+    int64 trigger_at = 4;
+    // 事件概要
+    // @gotags: json:"summary" bson:"summary" validate:"required"
+    string summary = 5;
+    // 事件内容
+    // @gotags: json:"content" bson:"content" validate:"required"
+    string content = 6;
+    // 图表URL地址
+    // @gotags: json:"pannel_url" bson:"pannel_url"
+    string pannel_url = 7;
+    // 告警规则URL
+    // @gotags: json:"rule_url" bson:"rule_url"
+    string rule_url = 8;
+    // 事件当前状态
+    // @gotags: json:"state" bson:"state"
+    State state = 9;
+    // 触发事件的规则ID, 有触发放提供, 比如 Grafana 对应rule_id
+    // @gotags: json:"rule_id" bson:"rule_id" validate:"required"
+    string rule_id = 10;
+    // 触发事件的规则ID的描述, 有触发放提供
+    // @gotags: json:"rule_name" bson:"rule_name"
+    string rule_name = 11;
+    // 那个实例触发的事件
+    // @gotags: json:"instance" bson:"instance" validate:"required"
+    string instance = 12;
+    // 事件的标签
+    // @gotags: json:"labels" bson:"labels"
+    repeated Label labels = 13;
+}
+
+message Provider {
+    // 事件提供方类型
+    // @gotags: json:"type" bson:"type"
+    ProviderType type = 1;
+    // 操作者IP
+    // @gotags: bson:"ip_address" json:"ip_address"
+    string ip_address = 2; 
+    // 用户UA
+    // @gotags: bson:"user_agent" json:"user_agent" 
+    string user_agent = 3;  
+}
+
+// 事件标签
+message Label {
+    // 标签Key
+    // @gotags: json:"key" bson:"key"
+    string key = 1;
+    // 标签Value
+    // @gotags: json:"value" bson:"value"
+    string value = 2;
 }
