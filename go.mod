@@ -12,7 +12,7 @@ require (
 	github.com/go-openapi/spec v0.20.6
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/imdario/mergo v0.3.13
-	github.com/infraboard/keyauth v0.7.9
+	github.com/infraboard/keyauth v0.8.0
 	github.com/infraboard/mcenter v0.0.3
 	github.com/infraboard/mcube v1.9.0
 	github.com/rs/xid v1.4.0

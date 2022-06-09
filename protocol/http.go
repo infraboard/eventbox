@@ -9,6 +9,7 @@ import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/keyauth/apps/endpoint"
+	"github.com/infraboard/keyauth/client/rpc"
 	"github.com/infraboard/mcube/app"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/logger"
@@ -22,7 +23,7 @@ import (
 
 // NewHTTPService 构建函数
 func NewHTTPService() *HTTPService {
-	c, err := conf.C().Keyauth.Client()
+	c, err := rpc.NewClient(conf.C().Mcenter)
 	if err != nil {
 		panic(err)
 	}

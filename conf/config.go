@@ -6,8 +6,7 @@ import (
 	"sync"
 	"time"
 
-	kc "github.com/infraboard/keyauth/client"
-
+	"github.com/infraboard/mcenter/client/rpc"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -22,7 +21,7 @@ func newConfig() *Config {
 		Log: newDefaultLog(),
 
 		Mongo:   newDefaultMongoDB(),
-		Keyauth: newDefaultKeyauth(),
+		Mcenter: rpc.NewDefaultConfig(),
 	}
 }
 
@@ -31,8 +30,21 @@ type Config struct {
 	App *app `toml:"app"`
 	Log *log `toml:"log"`
 
-	Mongo   *mongodb `toml:"mongodb"`
-	Keyauth *keyauth `toml:"keyauth"`
+	Mongo   *mongodb    `toml:"mongodb"`
+	Mcenter *rpc.Config `toml:"mcenter"`
+}
+
+// InitGloabl 注入全局变量
+func (c *Config) InitGloabl() error {
+	// 加载全局配置单例
+	global = c
+
+	// 提前加载好 mcenter客户端
+	err := rpc.LoadClientFromConfig(c.Mcenter)
+	if err != nil {
+		panic("load mcenter client from config error: " + err.Error())
+	}
+	return nil
 }
 
 type app struct {
@@ -103,37 +115,6 @@ func newDefaultLog() *log {
 		Format:  "text",
 		To:      "stdout",
 	}
-}
-
-// Auth auth 配置
-type keyauth struct {
-	Host         string `toml:"host" env:"KEYAUTH_HOST"`
-	Port         string `toml:"port" env:"KEYAUTH_PORT"`
-	ClientID     string `toml:"client_id" env:"KEYAUTH_CLIENT_ID"`
-	ClientSecret string `toml:"client_secret" env:"KEYAUTH_CLIENT_SECRET"`
-}
-
-func (a *keyauth) Addr() string {
-	return a.Host + ":" + a.Port
-}
-
-func (a *keyauth) Client() (*kc.Client, error) {
-	if kc.C() == nil {
-		conf := kc.NewDefaultConfig()
-		conf.SetAddress(a.Addr())
-		conf.SetClientCredentials(a.ClientID, a.ClientSecret)
-		client, err := kc.NewClient(conf)
-		if err != nil {
-			return nil, err
-		}
-		kc.SetGlobal(client)
-	}
-
-	return kc.C(), nil
-}
-
-func newDefaultKeyauth() *keyauth {
-	return &keyauth{}
 }
 
 func newDefaultMongoDB() *mongodb {
