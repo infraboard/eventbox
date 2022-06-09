@@ -1,7 +1,13 @@
-package client
+package rpc
 
 import (
-	kc "github.com/infraboard/keyauth/client"
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/infraboard/mcenter/client/rpc"
+	"github.com/infraboard/mcenter/client/rpc/auth"
+	"github.com/infraboard/mcenter/client/rpc/resolver"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 	"google.golang.org/grpc"
@@ -25,14 +31,21 @@ func C() *ClientSet {
 }
 
 // NewClient todo
-func NewClient(conf *kc.Config) (*ClientSet, error) {
+func NewClient(conf *rpc.Config) (*ClientSet, error) {
 	zap.DevelopmentSetup()
 	log := zap.L()
 
-	conn, err := grpc.Dial(
-		conf.Address(),
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+
+	// 连接到服务
+	conn, err := grpc.DialContext(
+		ctx,
+		fmt.Sprintf("%s://%s", resolver.Scheme, "eventbox"), // Dial to "mcenter://eventbox"
+		grpc.WithPerRPCCredentials(auth.NewAuthentication(conf.ClientID, conf.ClientSecret)),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithPerRPCCredentials(conf.Authentication),
+		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
+		grpc.WithBlock(),
 	)
 	if err != nil {
 		return nil, err

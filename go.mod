@@ -11,9 +11,10 @@ require (
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 	github.com/go-openapi/spec v0.20.6
 	github.com/go-playground/validator/v10 v10.11.0
-	github.com/imdario/mergo v0.3.12
-	github.com/infraboard/keyauth v0.7.8
-	github.com/infraboard/mcube v1.8.6
+	github.com/imdario/mergo v0.3.13
+	github.com/infraboard/keyauth v0.7.9
+	github.com/infraboard/mcenter v0.0.3
+	github.com/infraboard/mcube v1.9.0
 	github.com/rs/xid v1.4.0
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.7.1
@@ -67,5 +68,5 @@ require (
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
